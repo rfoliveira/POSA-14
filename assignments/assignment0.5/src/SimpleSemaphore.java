@@ -18,6 +18,9 @@ public class SimpleSemaphore {
                             boolean fair)
     { 
         // TODO - you fill in here
+    	lock = new ReentrantLock(fair);
+    	cond = lock.newCondition();
+    	this.permits = permits;
     }
 
     /**
@@ -26,6 +29,16 @@ public class SimpleSemaphore {
      */
     public void acquire() throws InterruptedException {
         // TODO - you fill in here
+    	lock.lock();
+    	try {
+    		while (permits == 0) {
+    			cond.await();
+    		}
+    		permits++;
+    	}
+    	finally {
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -34,6 +47,16 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here
+    	lock.lock();
+    	try {
+    		while (permits == 0) {
+    			cond.awaitUninterruptibly();
+    		}
+    		permits--;
+    	}
+    	finally {
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -41,22 +64,39 @@ public class SimpleSemaphore {
      */
     void release() {
         // TODO - you fill in here
+    	lock.lock();
+    	try {
+    		while (permits == 0) {
+				try {
+					cond.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+    		}
+    		permits--;
+    	}
+    	finally {
+    		lock.unlock();
+    	}
     }
 
     /**
      * Define a ReentrantLock to protect the critical section.
      */
     // TODO - you fill in here
+    private Lock lock;
 
     /**
      * Define a ConditionObject to wait while the number of
      * permits is 0.
      */
     // TODO - you fill in here
+    private Condition cond;
 
     /**
      * Define a count of the number of available permits.
      */
     // TODO - you fill in here
+    private int permits;
 }
 
