@@ -19,7 +19,7 @@ public class SimpleSemaphore {
     { 
         // TODO - you fill in here
     	lock = new ReentrantLock(fair);
-    	cond = lock.newCondition();
+    	notOccupied = lock.newCondition();
     	this.permits = permits;
     }
 
@@ -31,10 +31,11 @@ public class SimpleSemaphore {
         // TODO - you fill in here
     	lock.lock();
     	try {
-    		while (permits == 0) {
-    			cond.await();
+    		while (permits == 1) {
+    			notOccupied.await();
     		}
-    		permits++;
+    		permits = 1;
+    		notOccupied.signal();
     	}
     	finally {
     		lock.unlock();
@@ -47,12 +48,13 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here
-    	lock.lock();
+		lock.lock();		
     	try {
-    		while (permits == 0) {
-    			cond.awaitUninterruptibly();
+    		while (permits == 1) {
+    			notOccupied.awaitUninterruptibly();
     		}
-    		permits--;
+    		permits = 1;
+    		notOccupied.signal();
     	}
     	finally {
     		lock.unlock();
@@ -68,12 +70,13 @@ public class SimpleSemaphore {
     	try {
     		while (permits == 0) {
 				try {
-					cond.await();
+					notOccupied.await();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
     		}
-    		permits--;
+    		permits = 0;
+    		notOccupied.signal();
     	}
     	finally {
     		lock.unlock();
@@ -84,14 +87,14 @@ public class SimpleSemaphore {
      * Define a ReentrantLock to protect the critical section.
      */
     // TODO - you fill in here
-    private Lock lock;
+    private final Lock lock;
 
     /**
      * Define a ConditionObject to wait while the number of
      * permits is 0.
      */
     // TODO - you fill in here
-    private Condition cond;
+    private final Condition notOccupied;
 
     /**
      * Define a count of the number of available permits.
