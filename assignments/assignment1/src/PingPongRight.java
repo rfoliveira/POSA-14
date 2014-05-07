@@ -19,7 +19,7 @@ public class PingPongRight {
     /**
      * Latch that will be decremented each time a thread exits.
      */
-    public static CountDownLatch latch = null; // TODO - You fill in here
+    public static CountDownLatch latch = new CountDownLatch(mMaxIterations);
 
     /**
      * @class PlayPingPongThread
@@ -33,9 +33,12 @@ public class PingPongRight {
         /**
          * Constructor initializes the data member.
          */
-        public PlayPingPongThread (/* TODO - You fill in here */)
+        public PlayPingPongThread(String stringToPrint)
         {
-            // TODO - You fill in here.
+			// TODO - You fill in here.
+        	this.stringToPrint = stringToPrint;
+        	ping = new SimpleSemaphore(1, true);
+        	pong = new SimpleSemaphore(1, true);
         }
 
         /**
@@ -46,6 +49,13 @@ public class PingPongRight {
         public void run () 
         {
             // TODO - You fill in here.
+        	System.out.println(stringToPrint);
+        	try {
+        		ping.acquire();
+				pong.acquire();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
 
         /**
@@ -53,11 +63,14 @@ public class PingPongRight {
          * iteration.
          */
         // TODO - You fill in here.
+        private String stringToPrint;
 
         /**
          * The two SimpleSemaphores use to alternate pings and pongs.
          */
         // TODO - You fill in here.
+        private final SimpleSemaphore ping;
+        private final SimpleSemaphore pong;
     }
 
     /**
@@ -75,9 +88,9 @@ public class PingPongRight {
             // Create the ping and pong threads, passing in the string
             // to print and the appropriate SimpleSemaphores.
             PlayPingPongThread ping =
-                new PlayPingPongThread(/* TODO - You fill in here */);
+                new PlayPingPongThread("ping");
             PlayPingPongThread pong =
-                new PlayPingPongThread(/* TODO - You fill in here */);
+                new PlayPingPongThread("pong");
             
             // Initiate the ping and pong threads, which will call the
             // run() hook method.
@@ -90,7 +103,8 @@ public class PingPongRight {
             // TODO - replace replace the following line with a
             // CountDownLatch barrier synchronizer call that waits for
             // both threads to finish.
-            throw new java.lang.InterruptedException();
+            //throw new java.lang.InterruptedException();
+            latch.await();
         } 
         catch (java.lang.InterruptedException e)
             {}
