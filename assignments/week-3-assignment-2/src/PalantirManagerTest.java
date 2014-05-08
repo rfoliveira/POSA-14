@@ -48,7 +48,7 @@ class PalantirManagerTest
                 // gaze into a Palantir.
                 for (int i = 0; i < mMaxPalantirSessions; ++i) {
                     System.out.println(Thread.currentThread().getName() 
-                                       + " is acquiring palantir");
+                                       + " is acquiring the palantir");
 
                     // Used to check for Semaphore fairness.
                     mFairnessChecker.addNewThread(Thread.currentThread().getName());
@@ -57,9 +57,17 @@ class PalantirManagerTest
                     // all the available Palantiri are in use.
                     Palantir palantir = mPalantirManager.acquirePalantir();
 
-                    // There's a race condition here, so we'll just
-                    // give a warning if it looks like the semaphore
-                    // acquire() method isn't "fair.
+                    // There's a race condition here since it's
+                    // possible for one thread to call
+                    // mFairnessChecker.addNewThread() and then yield
+                    // to another thread which again calls
+                    // mFairnessChecker.addNewThread() and then goes
+                    // on without interruption to call
+                    // mPalantirManager.acquirePalantir(), which will
+                    // fool the fairness checker into wrongly thinking
+                    // the acquisition wasn't fair. we'll just give a
+                    // warning (rather than an error) if it looks like
+                    // the semaphore acquire() method isn't "fair".
                     if (!mFairnessChecker.checkOrder(Thread.currentThread().getName()))
                         System.out.println(Thread.currentThread().getName() 
                                            + ": warning, semaphore acquire may not be fair");
@@ -75,7 +83,9 @@ class PalantirManagerTest
                             throw new RuntimeException();
                         }
                     System.out.println(Thread.currentThread().getName() 
-                                       + " is starting to gaze");
+                                       + " is starting to gaze at the "
+                                       + palantir.name() 
+                                       + " palantir");
 
                     // Gaze at the Palantir for the time alloted in
                     // the command.
@@ -86,15 +96,18 @@ class PalantirManagerTest
                     mActiveThreads.decrementAndGet();
 
                     System.out.println(Thread.currentThread().getName() 
-                                       + " is finished gazing");
+                                       + " is finished gazing at the "
+                                       + palantir.name() 
+                                       + " palantir");
 
                     // Return the Palantir back to the shared pool so
                     // other Beings can gaze at it.
                     mPalantirManager.releasePalantir(palantir);
 
-                    System.out.println(Thread.currentThread().getName() 
-                                       + " is releasing palantir");                    
-
+                    System.out.println(Thread.currentThread().getName()
+                                       + " is releasing the "
+                                       + palantir.name() + 
+                                       " palantir");                    
                 }
                     
             }
