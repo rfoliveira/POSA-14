@@ -37,6 +37,7 @@ public class PingPongRight {
         {
 			// TODO - You fill in here.
         	this.stringToPrint = stringToPrint;
+        	
         	ping = new SimpleSemaphore(1, true);
         	pong = new SimpleSemaphore(1, true);
         }
@@ -52,10 +53,12 @@ public class PingPongRight {
         	System.out.println(stringToPrint);
         	try {
         		ping.acquire();
-				pong.acquire();
+        		pong.acquire();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+        	
+        	latch.countDown();
         }
 
         /**
@@ -69,14 +72,15 @@ public class PingPongRight {
          * The two SimpleSemaphores use to alternate pings and pongs.
          */
         // TODO - You fill in here.
-        private final SimpleSemaphore ping;
-        private final SimpleSemaphore pong;
+        private SimpleSemaphore ping;
+        private SimpleSemaphore pong;
     }
 
     /**
      * The main() entry point method into PingPongRight program. 
      */
     public static void main(String[] args) {
+    	String msg;
         try {         
             // Create the ping and pong SimpleSemaphores that control
             // alternation between threads.
@@ -87,15 +91,23 @@ public class PingPongRight {
 
             // Create the ping and pong threads, passing in the string
             // to print and the appropriate SimpleSemaphores.
+            /*
             PlayPingPongThread ping =
                 new PlayPingPongThread("ping");
             PlayPingPongThread pong =
                 new PlayPingPongThread("pong");
-            
+            */
+            for (int i = 0; i < mMaxIterations; i++) {
+            	//msg = (i %2 == 0) ? "Ping!(" + (i+1) + ")" : "Pong!(" + (i+1) + ")";
+            	new PlayPingPongThread("Ping!(" + (i+1) + ")").start();
+            	new PlayPingPongThread("Pong!(" + (i+1) + ")").start();            	
+            }
             // Initiate the ping and pong threads, which will call the
             // run() hook method.
+            /*
             ping.start();
             pong.start();
+            */
 
             // Use barrier synchronization to wait for both threads to
             // finish.
