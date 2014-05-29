@@ -31,10 +31,10 @@ public class SimpleSemaphore {
         // TODO - you fill in here
     	lock.lock();
     	try {
-    		while (permits == 1) {
+    		while (permits == 0) {
     			notOccupied.await();
     		}
-    		permits = 1;
+    		permits--;
     		notOccupied.signal();
     	}
     	finally {
@@ -50,10 +50,10 @@ public class SimpleSemaphore {
         // TODO - you fill in here
 		lock.lock();		
     	try {
-    		while (permits == 1) {
+    		while (permits == 0) {
     			notOccupied.awaitUninterruptibly();
     		}
-    		permits = 1;
+    		permits--;
     		notOccupied.signal();
     	}
     	finally {
@@ -75,7 +75,7 @@ public class SimpleSemaphore {
 					e.printStackTrace();
 				}
     		}
-    		permits = 0;
+    		permits++;
     		notOccupied.signal();
     	}
     	finally {
