@@ -24,7 +24,7 @@ public class SimpleSemaphore {
 * Define a Condition that waits while the number of permits is 0.
 */
     // TODO - you fill in here
-	private final Condition notOccupied;
+	private final Condition isEmpty;
 
     /**
 * Define a count of the number of available permits.
@@ -38,7 +38,7 @@ public class SimpleSemaphore {
         // making sure to allow both fair and non-fair Semaphore
         // semantics.
 		lock = new ReentrantLock(fair);
-		notOccupied = lock.newCondition();
+		isEmpty = lock.newCondition();
 		this.permits = permits;
     }
 
@@ -50,11 +50,13 @@ public class SimpleSemaphore {
         // TODO - you fill in here.
 		lock.lock();
 		try {
-			while (permits == 0) {
-				notOccupied.await();
-			}
 			permits--;
-			notOccupied.signal();
+			
+			while (permits < 0) {
+				isEmpty.await();
+			}
+			
+			isEmpty.signal();
 		}
 		finally {
 			lock.unlock();
@@ -69,11 +71,13 @@ public class SimpleSemaphore {
         // TODO - you fill in here.
 		lock.lock();
 		try {
-			while (permits == 0) {
-				notOccupied.awaitUninterruptibly();
-			}
 			permits--;
-			notOccupied.signal();
+			
+			while (permits < 0) {
+				isEmpty.awaitUninterruptibly();
+			}
+			
+			isEmpty.signal();
 		}
 		finally {
 			lock.unlock();
@@ -87,15 +91,17 @@ public class SimpleSemaphore {
         // TODO - you fill in here.
 		lock.lock();
 		try {
-			while (permits == 0) {
+			permits++;
+			
+			while (permits < 0) {
 				try {
-					notOccupied.await();
+					isEmpty.await();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			permits++;
-			notOccupied.signal();
+						
+			isEmpty.signal();
 		}
 		finally {
 			lock.unlock();
