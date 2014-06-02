@@ -3,15 +3,6 @@ package edu.vuum.mocca;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-<<<<<<< HEAD
-=======
-import java.util.concurrent.Semaphore;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
->>>>>>> 301602455516e01674a6ce4f3feb583d3f26516a
 import org.junit.Test;
 
 /**
