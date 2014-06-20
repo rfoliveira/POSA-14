@@ -31,11 +31,10 @@ public class SimpleSemaphore {
         // TODO - you fill in here
     	lock.lock();
     	try {
-    		while (permits == 1) {
+    		while (permits == 0) {
     			notOccupied.await();
     		}
-    		permits = 1;
-    		notOccupied.signal();
+    		permits--;
     	}
     	finally {
     		lock.unlock();
@@ -50,11 +49,10 @@ public class SimpleSemaphore {
         // TODO - you fill in here
 		lock.lock();		
     	try {
-    		while (permits == 1) {
+    		while (permits == 0) {
     			notOccupied.awaitUninterruptibly();
     		}
-    		permits = 1;
-    		notOccupied.signal();
+    		permits--;
     	}
     	finally {
     		lock.unlock();
@@ -68,14 +66,7 @@ public class SimpleSemaphore {
         // TODO - you fill in here
     	lock.lock();
     	try {
-    		while (permits == 0) {
-				try {
-					notOccupied.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-    		}
-    		permits = 0;
+    		permits++;
     		notOccupied.signal();
     	}
     	finally {
@@ -100,6 +91,6 @@ public class SimpleSemaphore {
      * Define a count of the number of available permits.
      */
     // TODO - you fill in here
-    private int permits;
+    private volatile int permits;
 }
 
