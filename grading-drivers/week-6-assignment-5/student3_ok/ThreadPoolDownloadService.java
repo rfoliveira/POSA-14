@@ -2,10 +2,12 @@ package edu.vuum.mocca;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
@@ -44,7 +46,7 @@ public class ThreadPoolDownloadService extends Service {
      * Hook method called when the Service is created.
      */
     @Override
-    public void onCreate() {
+	public void onCreate() {
         // TODO - You fill in here to replace null with a new
         // FixedThreadPool Executor that's configured to use
         // MAX_THREADS. Use a factory method in the Executors class.
@@ -82,7 +84,7 @@ public class ThreadPoolDownloadService extends Service {
      * the proper Intent.
      */
     @Override
-    public int onStartCommand(final Intent intent,
+	public int onStartCommand(final Intent intent,
                               int flags,
                               int startId) {
         // TODO - You fill in here to replace null with a new Runnable
@@ -93,17 +95,15 @@ public class ThreadPoolDownloadService extends Service {
         // the uri in the intent and returns the file's pathname using
         // a Messenger who's Bundle key is defined by DownloadUtils.MESSENGER_KEY.
 
-        Runnable downloadRunnable = new Runnable() {
-			
+        Runnable downloadRunnable = new Runnable(){
+
 			@Override
 			public void run() {
-				DownloadUtils.downloadAndRespond(
-						getApplicationContext(), 
-						intent.getData(), 
-						(Messenger)intent.getExtras().get(DownloadUtils.MESSENGER_KEY)
-				);
-			}
-		};
+				Uri uri = intent.getData();
+		    	Messenger messenger = (Messenger) intent.getExtras().get(DownloadUtils.MESSENGER_KEY);
+				DownloadUtils.downloadAndRespond(getBaseContext(), uri, messenger);
+				
+			}};
 
         mExecutor.execute(downloadRunnable);
       

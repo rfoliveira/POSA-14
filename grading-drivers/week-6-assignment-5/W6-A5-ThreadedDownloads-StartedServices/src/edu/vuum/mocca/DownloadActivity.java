@@ -2,6 +2,8 @@ package edu.vuum.mocca;
 
 import java.lang.ref.WeakReference;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -65,7 +67,7 @@ public class DownloadActivity extends DownloadBase {
     	
     	// Handle any messages that get sent to this Handler
     	@Override
-		public void handleMessage(Message msg) {
+        public void handleMessage(Message msg) {
     		
             // Get an actual reference to the DownloadActivity
             // from the WeakReference.
@@ -78,6 +80,10 @@ public class DownloadActivity extends DownloadBase {
                 // bitmap that's been downloaded and returned to
                 // the DownloadActivity as a pathname who's Bundle
             	// key is defined by DownloadUtils.PATHNAME_KEY
+            	Bundle msgData = msg.getData();
+            	
+            	if (msgData != null)
+            		activity.displayBitmap(msgData.getString(DownloadUtils.PATHNAME_KEY));
             }
     	}
     }
@@ -101,12 +107,17 @@ public class DownloadActivity extends DownloadBase {
      */
     public void runService(View view) {
     	String which = "";
+    	Intent it = null;
 
     	switch (view.getId()) {
         case R.id.intent_service_button:
             // TODO - You fill in here to start the
             // DownloadIntentService with the appropriate Intent
             // returned from the makeIntent() factory method.
+        	it = DownloadIntentService.makeIntent(view.getContext(), handler, getUrlString());
+        	
+        	if (it != null)
+        		startService(it);
 
             which = "Starting IntentService";
             break;
@@ -115,10 +126,13 @@ public class DownloadActivity extends DownloadBase {
             // TODO - You fill in here to start the
             // ThreadPoolDownloadService with the appropriate Intent
             // returned from the makeIntent() factory method.
+        	it = ThreadPoolDownloadService.makeIntent(view.getContext(), handler, getUrlString());
+        	
+        	if (it != null)
+        		startService(it);
 
             which = "Starting ThreadPoolDownloadService";
-            break;
-        
+            break;        
         }
 
     	// Display a short pop-up notification telling the user which

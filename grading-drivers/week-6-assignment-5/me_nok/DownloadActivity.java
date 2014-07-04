@@ -2,7 +2,6 @@ package edu.vuum.mocca;
 
 import java.lang.ref.WeakReference;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -107,17 +106,13 @@ public class DownloadActivity extends DownloadBase {
      */
     public void runService(View view) {
     	String which = "";
-    	Intent it = null;
 
     	switch (view.getId()) {
         case R.id.intent_service_button:
             // TODO - You fill in here to start the
             // DownloadIntentService with the appropriate Intent
             // returned from the makeIntent() factory method.
-        	it = DownloadIntentService.makeIntent(view.getContext(), handler, getUrlString());
-        	
-        	if (it != null)
-        		startService(it);
+        	DownloadIntentService.makeIntent(view.getContext(), handler, getUrlString());
 
             which = "Starting IntentService";
             break;
@@ -126,10 +121,7 @@ public class DownloadActivity extends DownloadBase {
             // TODO - You fill in here to start the
             // ThreadPoolDownloadService with the appropriate Intent
             // returned from the makeIntent() factory method.
-        	it = ThreadPoolDownloadService.makeIntent(view.getContext(), handler, getUrlString());
-        	
-        	if (it != null)
-        		startService(it);
+        	ThreadPoolDownloadService.makeIntent(view.getContext(), handler, getUrlString());
 
             which = "Starting ThreadPoolDownloadService";
             break;        

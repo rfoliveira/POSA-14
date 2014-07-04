@@ -73,8 +73,7 @@ public class ThreadPoolDownloadService extends Service {
     	// TODO - You fill in here, by replacing null with an
         // invocation of the appropriate factory method in
         // DownloadUtils that makes a MessengerIntent.
-
-        return DownloadUtils.makeMessengerIntent(context, ThreadPoolDownloadService.class, handler, uri);
+    	return DownloadUtils.makeMessengerIntent(context, ThreadPoolDownloadService.class, handler, uri);
     }
 
     /**
@@ -97,14 +96,12 @@ public class ThreadPoolDownloadService extends Service {
 			
 			@Override
 			public void run() {
-				DownloadUtils.downloadAndRespond(
-						getApplicationContext(), 
-						intent.getData(), 
-						(Messenger)intent.getExtras().get(DownloadUtils.MESSENGER_KEY)
-				);
+				// TODO Auto-generated method stub
+				DownloadUtils.downloadAndRespond(getApplicationContext(), intent.getData(), (Messenger)intent.getParcelableExtra(DownloadUtils.MESSENGER_KEY));
+				
 			}
 		};
-
+        
         mExecutor.execute(downloadRunnable);
       
         // Tell the Android framework how to behave if this service is

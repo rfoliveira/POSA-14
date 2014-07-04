@@ -1,0 +1,1 @@
+esqueci de iniciar a intent com o método startService(), em DownloadActivity.
