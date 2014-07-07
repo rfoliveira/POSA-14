@@ -9,9 +9,12 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Line 12 -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />--> <!-- Line 12 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" /> <!-- Line 14 -->
+    
+    <permission android:name="edu.vuum.mooca.START_APP" android:protectionLevel="normal" />
+    <permission android:name="edu.vuum.mooca.START_SOUND_RECORDER" android:protectionLevel="normal" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -30,7 +33,7 @@
             android:name="edu.vuum.mocca.ui.ListStoryActivity"
             android:label="@string/title_activity_main" />
         
-        <activity android:name="edu.vuum.mocca.ui.LoginActivity">
+        <activity android:name="edu.vuum.mocca.ui.LoginActivity" android:permission="edu.vuum.mooca.START_APP">
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" /> <!-- Line 35 -->
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -52,7 +55,8 @@
         <!-- THIS IS THE SOUND RECORD ACTIVITY -->
         <activity
             android:name="edu.vuum.mocca.ui.SoundRecordActivity"
-            android:label="@string/title_activity_sound_record">
+            android:label="@string/title_activity_sound_record"
+            android:permission="edu.vuum.mooca.START_SOUND_RECORDER">
             <intent-filter> 										<!-- Line 56 -->
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
